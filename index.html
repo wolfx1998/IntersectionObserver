@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <div class="test-div"></div>
+    <div class="footer-wrapper"></div>
+</body>
+<style>
+    .footer-wrapper {
+        height: 100vh;
+        width: 100%;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .footer-wrapper.addAnimation::before {
+        content: '';
+        height: 10px;
+        width: 10px;
+        border-radius: 50%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        background-color: green;
+        transform: translate(-40%, -40%);
+    }
+
+    .addAnimation::before {
+        animation-delay: .5s;
+        animation-name: fillBackground;
+        /* Best looking one */
+        animation-timing-function: cubic-bezier(0.645, 0.045, 0.355, 1);
+        animation-duration: 1.7s;
+        animation-fill-mode: forwards;
+    }
+
+    @keyframes fillBackground {
+        to {
+            width: 200vw;
+            height: 200vw;
+        }
+    }
+    
+    .test-div {
+        height: 100vh;
+        width: 100%;
+        background-color: #fff;
+    }
+
+</style>
+
+<script>
+    const footer = document.querySelector('.footer-wrapper');
+
+    let options = {
+        root: null,
+        rootMargin: '0px',
+        threshold: 0.7
+    }
+
+    let callback = (entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.intersectionRatio > 0) {
+                console.log('in the view');
+                entry.target.classList.add('addAnimation');
+                observer.unobserve(entry.target);
+                console.log(entry.target);
+            } else {
+                console.log('out of view');
+            }
+        })
+    }
+
+    let observer = new IntersectionObserver(callback, options);
+    observer.observe(footer);
+</script>
+</html>
